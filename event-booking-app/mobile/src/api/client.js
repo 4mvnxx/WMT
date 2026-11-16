@@ -1,7 +1,9 @@
 import axios from 'axios';
-import * as SecureStore from 'expo-secure-store';
+import { storage } from '../utils/storage';
 
-export const API_BASE_URL = 'http://192.168.100.148:5000/api';
+// Override for local dev, e.g. EXPO_PUBLIC_API_URL=http://192.168.x.x:5000/api
+export const API_BASE_URL =
+  process.env.EXPO_PUBLIC_API_URL || 'https://wmt-vkab.onrender.com/api';
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -9,7 +11,7 @@ const apiClient = axios.create({
 });
 
 apiClient.interceptors.request.use(async (config) => {
-  const token = await SecureStore.getItemAsync('token');
+  const token = await storage.getItem('token');
 
   if (token) {
     config.headers = {

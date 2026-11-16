@@ -30,7 +30,9 @@ const registerUser = async (req, res, next) => {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { name, email, password, role } = req.body;
+    // Role is never taken from the client: public signups are always "user".
+    // Admin accounts are created with seedAdmin.js.
+    const { name, email, password } = req.body;
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -42,7 +44,7 @@ const registerUser = async (req, res, next) => {
       name,
       email,
       password: hashedPassword,
-      role: role || "user",
+      role: "user",
     });
 
     res.status(201).json({
